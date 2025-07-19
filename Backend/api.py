@@ -9,46 +9,54 @@ from src.esg_scorecard import perform_analysis
 from src.memory_store import memory_store
 
 app = Flask(__name__)
-#CORS(app)  # Enable CORS for all routes
+CORS(app)  # Enable CORS for all routes
+'''
 CORS(app, resources={r"/*": {"origins": [
     "https://esg-risk-reporter.vercel.app"
 ]}})
+'''
 
 def extract_text_from_pdf(file_stream):
-    text = ""
-    with pdfplumber.open(file_stream) as pdf:
-        for page in pdf.pages:
-            page_text = page.extract_text()
-            if page_text:
-                text += page_text + "\n"
-    return text.strip()
+    try:
+        text = ""
+        with pdfplumber.open(file_stream) as pdf:
+            for page in pdf.pages:
+                text += page.extract_text() or ""
+        return text.strip()
+    except Exception as e:
+        print("Error extracting text from PDF:", str(e))
+        raise RuntimeError("Failed to extract text from PDF.")
 
 @app.route('/api/upload', methods=['POST'])
 def upload_file():
-    if 'file' not in request.files:
-        return jsonify({"error": "No file uploaded"}), 400
-
-    file = request.files['file']
-    if file.filename == '':
-        return jsonify({"error": "No selected file"}), 400
-
     try:
-        # Extract text from uploaded PDF (in-memory)
+        if 'file' not in request.files:
+            print("No file key in request.files")  # ✅ Debug
+            return jsonify({"error": "No file uploaded"}), 400
+
+        file = request.files['file']
+        if file.filename == '':
+            print("Filename is empty")  # ✅ Debug
+            return jsonify({"error": "No selected file"}), 400
+
         file_stream = BytesIO(file.read())
+        print("Reading file stream...")  # ✅ Debug
+
         text = extract_text_from_pdf(file_stream)
+        print("Extracted text:", text[:100])  # ✅ Only print preview
 
         if not text:
+            print("Text is empty")  # ✅ Debug
             return jsonify({"error": "No text found in the PDF"}), 400
 
-        memory_store["extracted_text"] = text  # Save text in memory
-
-        # Perform analysis (in-memory)
+        memory_store["extracted_text"] = text
         perform_analysis(text)
         analyze_text(text)
 
         return jsonify({"message": "File uploaded and analysis completed"}), 200
 
     except Exception as e:
+        print("❌ ERROR during upload_file:", e)  # ✅ Show traceback
         return jsonify({"error": str(e)}), 500
 
 @app.route('/api/esg-summary', methods=['GET'])
@@ -103,6 +111,6 @@ def home():
     return jsonify({"message": "Welcome to the ESG Risk Assessment API"})
 
 if __name__ == '__main__':
-    #app.run(debug=True)
+    #app.run()
     port = int(os.environ.get("PORT", 5000))
     app.run(debug=False, host="0.0.0.0", port=port)
