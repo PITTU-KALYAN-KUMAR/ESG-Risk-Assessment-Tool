@@ -4,6 +4,9 @@ from flask_cors import CORS
 import pdfplumber
 from io import BytesIO
 import os
+import spacy.cli
+spacy.cli.download("en_core_web_sm")
+spacy.cli.link("en_core_web_sm", "en_core_web_sm", force=True)  
 from src.analyze_text import analyze_text
 from src.esg_scorecard import perform_analysis
 from src.memory_store import memory_store
