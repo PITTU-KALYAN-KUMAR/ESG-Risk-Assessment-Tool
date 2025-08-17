@@ -6,7 +6,7 @@ interface DashboardProps {
   isDarkMode: boolean;
 }
 
-const Dashboard: React.FC<DashboardProps> = ({ isDarkMode }) => {
+export const Dashboard: React.FC<DashboardProps> = ({ isDarkMode }) => {
   interface EsgData {
     category: string;
     total_esg_terms_matched?: number;
@@ -35,7 +35,7 @@ const Dashboard: React.FC<DashboardProps> = ({ isDarkMode }) => {
 
   return (
     <div className={`p-4 sm:p-6 ${isDarkMode ? 'bg-gray-900 text-white' : 'bg-gray-50 text-gray-900'}`}>
-      <h1 className="text-2xl font-bold mb-6 text-center sm:text-left">ESG Risk Dashboard</h1>
+    <h1 className="text-2xl font-bold mb-6 text-center sm:text-left">ESG Risk Dashboard</h1>
 
       {/* Table: ESG Data */}
       <div className="mb-8">
@@ -82,7 +82,43 @@ const Dashboard: React.FC<DashboardProps> = ({ isDarkMode }) => {
           </BarChart>
         </ResponsiveContainer>
       </div>
+      {/* Key Metrics Grid */}
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+        {esgData.map((item, index) => (
+          <div
+            key={index}
+            className={`${isDarkMode ? 'bg-gray-800 border-gray-700' : 'bg-white border-gray-200'} rounded-xl shadow-lg border p-6 transition-colors duration-300`}
+          >
+            <div className="flex items-center justify-between mb-4">
+              <h3 className={`text-lg font-semibold ${isDarkMode ? 'text-white' : 'text-gray-900'}`}>
+                {item.category}
+              </h3>
+              {item.risk_percentage < 50 ? (
+                <span className="text-green-500 font-bold">Low Risk</span>
+              ) : (
+                <span className="text-red-500 font-bold">High Risk</span>
+              )}
+            </div>
 
+            <div className="mb-4">
+              <div className="text-3xl font-bold text-blue-600 mb-2">{item.risk_percentage}%</div>
+              <div className={`w-full bg-gray-200 rounded-full h-2 ${isDarkMode ? 'bg-gray-700' : ''}`}>
+                <div
+                  className="h-2 rounded-full bg-gradient-to-r from-blue-500 to-purple-600"
+                  style={{ width: `${item.risk_percentage}%` }}
+                />
+              </div>
+            </div>
+
+            <div className="flex items-center space-x-2">
+              <span className={`text-sm ${isDarkMode ? 'text-gray-400' : 'text-gray-600'}`}>
+                Weighted Score: {item.score}
+              </span>
+            </div>
+          </div>
+        ))}
+      </div>
+      
       {/* Pie Chart: Contribution of Each Category to Total Risk */}
       <div className="mb-8">
         <h2 className="text-lg font-semibold mb-4 text-center sm:text-left">Contribution of Each Category to Total Risk</h2>

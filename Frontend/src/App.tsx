@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { Menu, X, Leaf, Moon, Sun, Upload, Download, FileText, Shield, BarChart3, AlertCircle, CheckCircle } from 'lucide-react';
 import { BrowserRouter as Router, Route, Routes, Link } from "react-router-dom";
-import Dashboard from "./components/Dashboard";
+import { Dashboard } from "./components/Dashboard";
 import About from './components/About';
 import Help from './components/Help';
 import jsPDF from "jspdf";
@@ -32,8 +32,8 @@ function App() {
   const [esgAnalysis, setEsgAnalysis] = useState<{ category: string; score: number; risk_percentage: number }[]>([]);
 
   // Use environment variable for API URL with fallback
-  //const API_BASE = 'http://127.0.0.1:5000';
-  const API_BASE = "https://esg-risk-reporter.onrender.com";
+  const API_BASE = 'http://127.0.0.1:5000';
+  //const API_BASE = "https://esg-risk-reporter.onrender.com";
 
   // Initialize dark mode based on system preference
   useEffect(() => {
