@@ -18,12 +18,13 @@ export const Dashboard: React.FC<DashboardProps> = ({ isDarkMode }) => {
 
   const [esgData, setEsgData] = useState<EsgData[]>([]);
   const COLORS = ['#4CAF50', '#2196F3', '#9C27B0']; // Colors for Environmental, Social, Governance
-
+  //const API_BASE = 'http://127.0.0.1:5000';
+  const API_BASE = "https://esg-risk-reporter.onrender.com";
   useEffect(() => {
     // Fetch ESG data from the backend
     const fetchEsgData = async () => {
       try {
-        const response = await axios.get('http://localhost:5000/api/esg-analysis');
+        const response = await axios.get(`${API_BASE}/api/esg-analysis`);
         setEsgData(response.data);
       } catch (error) {
         console.error('Error fetching ESG data:', error);

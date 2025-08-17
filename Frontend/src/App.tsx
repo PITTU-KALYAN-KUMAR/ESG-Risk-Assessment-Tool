@@ -32,8 +32,8 @@ function App() {
   const [esgAnalysis, setEsgAnalysis] = useState<{ category: string; score: number; risk_percentage: number }[]>([]);
 
   // Use environment variable for API URL with fallback
-  const API_BASE = 'http://127.0.0.1:5000';
-  //const API_BASE = "https://esg-risk-reporter.onrender.com";
+  //const API_BASE = 'http://127.0.0.1:5000';
+  const API_BASE = "https://esg-risk-reporter.onrender.com";
 
   // Initialize dark mode based on system preference
   useEffect(() => {

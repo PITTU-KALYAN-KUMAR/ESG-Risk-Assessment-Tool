@@ -1,5 +1,5 @@
 import React from 'react';
-import { Shield, Target, Users, Leaf } from 'lucide-react';
+import { Shield, Users, Leaf } from 'lucide-react';
 
 interface AboutProps {
   isDarkMode: boolean;
